@@ -1,0 +1,142 @@
+{% extends 'coaching/base.html' %}
+
+{% block title %}Tableau de Bord - NextMind{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4">👋 Bonjour, {{ request.user.first_name|default:request.user.username }}!</h2>
+    
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card primary">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6>Sessions Actives</h6>
+                        <h2>{{ stats.active_sessions }}</h2>
+                    </div>
+                    <i class="fas fa-comments fa-3x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card success">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6>Exercices Complétés</h6>
+                        <h2>{{ stats.exercises_completed }}</h2>
+                    </div>
+                    <i class="fas fa-check-circle fa-3x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card warning">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6>Humeur Moyenne</h6>
+                        <h2>{{ stats.average_mood }}/5</h2>
+                    </div>
+                    <i class="fas fa-smile fa-3x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card" style="background: linear-gradient(135deg, #8b5cf6, #6366f1);">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6>Niveau Stress</h6>
+                        <h2>{{ stats.average_stress }}/10</h2>
+                    </div>
+                    <i class="fas fa-brain fa-3x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card p-4">
+                <h4 class="mb-3"><i class="fas fa-rocket text-primary"></i> Actions Rapides</h4>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'chat' %}" class="btn btn-primary w-100 py-3">
+                            <i class="fas fa-comments fa-2x mb-2 d-block"></i>
+                            Parler au Coach IA
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'checkin' %}" class="btn btn-success w-100 py-3">
+                            <i class="fas fa-heart fa-2x mb-2 d-block"></i>
+                            Check-in Quotidien
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'exercises' %}" class="btn btn-warning w-100 py-3">
+                            <i class="fas fa-dumbbell fa-2x mb-2 d-block"></i>
+                            Voir les Exercices
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card p-4">
+                <h5 class="mb-3"><i class="fas fa-lightbulb text-warning"></i> Conseil du Jour</h5>
+                <p class="text-muted">
+                    "Prenez 5 minutes aujourd'hui pour pratiquer la respiration profonde. 
+                    Cela peut réduire votre stress de 30%."
+                </p>
+                <button class="btn btn-outline-primary btn-sm">En savoir plus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity & Exercises -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h5 class="mb-3"><i class="fas fa-history text-info"></i> Activité Récente</h5>
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <i class="fas fa-check-circle text-success"></i> 
+                        Exercice "Respiration 4-7-8" complété
+                        <small class="text-muted float-end">Il y a 2h</small>
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fas fa-comments text-primary"></i> 
+                        Session de coaching terminée
+                        <small class="text-muted float-end">Hier</small>
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fas fa-heart text-danger"></i> 
+                        Check-in quotidien effectué
+                        <small class="text-muted float-end">Hier</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h5 class="mb-3"><i class="fas fa-star text-warning"></i> Exercices Recommandés</h5>
+                {% for exercise in recommended_exercises %}
+                <div class="d-flex justify-content-between align-items-center mb-3 p-2 border-bottom">
+                    <div>
+                        <h6 class="mb-1">{{ exercise.title }}</h6>
+                        <small class="text-muted">
+                            <i class="fas fa-clock"></i> {{ exercise.estimated_duration }} min
+                        </small>
+                    </div>
+                    <a href="{% url 'exercise_detail' exercise.id %}" class="btn btn-sm btn-outline-primary">Commencer</a>
+                </div>
+                {% empty %}
+                <p class="text-muted">Aucun exercice recommandé pour le moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
