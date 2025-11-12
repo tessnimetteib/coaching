@@ -1,0 +1,25 @@
+{% extends 'coaching/base.html' %}
+
+{% block title %}Ressources - NextMind{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-3">Ressources recommandées</h2>
+
+  {% if resources %}
+    <div class="list-group">
+      {% for r in resources %}
+        <a href="{{ r.url|default:'#' }}" class="list-group-item list-group-item-action" target="_blank" rel="noopener">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ r.title }}</h5>
+            <small class="text-muted">{{ r.source|default:'' }}</small>
+          </div>
+          <p class="mb-1">{{ r.description|truncatechars:140 }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">Aucune ressource pour le moment.</p>
+  {% endif %}
+</div>
+{% endblock %}

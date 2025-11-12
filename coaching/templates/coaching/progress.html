@@ -1,0 +1,37 @@
+{% extends 'coaching/base.html' %}
+
+{% block title %}Progression - NextMind{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-3">Votre progression</h2>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5>Sessions actives</h5>
+      <p>{{ stats.active_sessions|default:"0" }}</p>
+      <h5>Exercices complétés</h5>
+      <p>{{ stats.exercises_completed|default:"0" }}</p>
+      <h5>Humeur moyenne</h5>
+      <p>{{ stats.average_mood|default:"—" }}</p>
+    </div>
+  </div>
+
+  <h4 class="mb-2">Métriques récentes</h4>
+  {% if metrics %}
+    <ul class="list-group">
+      {% for m in metrics %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ m.metric_name }}</strong>
+            <div class="small text-muted">{{ m.metric_context|default:"" }}</div>
+          </div>
+          <span class="badge bg-primary rounded-pill">{{ m.metric_value }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">Aucune métrique enregistrée.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'coaching/base.html' %}
+
+{% block title %}Exercices - NextMind{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-3">Exercices</h2>
+
+  {% if exercises %}
+    <div class="row">
+      {% for exercise in exercises %}
+        <div class="col-md-6 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">{{ exercise.title }}</h5>
+              <p class="card-text text-muted">{{ exercise.theme }} — {{ exercise.estimated_duration }} min</p>
+              <p class="card-text">{{ exercise.description|truncatechars:150 }}</p>
+              <a href="{% url 'exercise_detail' exercise.id %}" class="btn btn-outline-primary btn-sm">Voir</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">Aucun exercice disponible pour le moment.</p>
+  {% endif %}
+</div>
+{% endblock %}

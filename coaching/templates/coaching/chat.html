@@ -1,0 +1,35 @@
+{% extends 'coaching/base.html' %}
+
+{% block title %}Chat avec Coach IA - NextMind{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-3">Chat avec le Coach IA</h2>
+
+  <div id="chat-box" class="card mb-3" style="min-height:200px;">
+    <div class="card-body">
+      {% if messages %}
+        <ul class="list-unstyled">
+          {% for msg in messages %}
+            <li class="mb-2">
+              <strong class="me-2">{{ msg.sender|capfirst }}:</strong>
+              <span>{{ msg.content }}</span>
+              <small class="text-muted float-end">{{ msg.timestamp }}</small>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">Aucun message pour le moment. Démarrez la conversation ci-dessous.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <form method="post" action="">
+    {% csrf_token %}
+    <div class="input-group">
+      <input name="message" id="message" class="form-control" placeholder="Écrivez votre message..." autocomplete="off">
+      <button class="btn btn-primary" type="submit">Envoyer</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

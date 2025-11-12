@@ -1,0 +1,24 @@
+/* Put this file after your other CSS files (or add the rules into your main stylesheet) */
+
+html, body, #app {
+  /* Reset root font sizing to browser default */
+  font-size: 100% !important;        /* equals ~16px in most browsers */
+  -webkit-text-size-adjust: 100% !important;
+  -ms-text-size-adjust: 100% !important;
+  zoom: 1 !important;                /* cancel any zoom applied via CSS */
+  transform: none !important;        /* cancel any transform scale */
+  transform-origin: initial !important;
+  max-width: 100% !important;
+}
+
+/* If your layout uses rem units, this ensures rem sizes are typical */
+:root {
+  font-size: 16px !important;
+}
+
+/* Optional: prevent a very narrow centered column if that is the issue */
+.container, .main-container {
+  max-width: 1200px !important;
+  width: auto !important;
+  margin: 0 auto !important;
+}
