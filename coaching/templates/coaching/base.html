@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -134,6 +135,10 @@
             font-size: 12px;
         }
     </style>
+
+    <!-- Load the fix-zoom override so it can cancel tiny font-size/scale problems -->
+    <link rel="stylesheet" href="{% static 'coaching/css/fix-zoom.css' %}">
+
     {% block extra_css %}{% endblock %}
 </head>
 <body>
