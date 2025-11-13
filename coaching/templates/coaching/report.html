@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rapport NextMind - Profil</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f7f8fb; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    .stat-card { border-radius:12px; padding:18px; background:white; box-shadow: 0 6px 20px rgba(20,20,40,0.04); }
+    .trait-label { font-weight:700; }
+    .small-muted { color:#6b7280; font-size:0.9rem; }
+    .chart-wrap { background:white; border-radius:12px; padding:12px; box-shadow: 0 4px 18px rgba(15,15,30,0.04); }
+  </style>
+</head>
+<body>
+<div class="container py-4">
+  <h3 class="mb-3">Rapport d'évaluation — NextMind AI Coach</h3>
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <div class="stat-card">
+        <h5>Big Five (Personnalité)</h5>
+        <p class="small-muted">Interprétation automatique selon barème 5–25 (Faible / Modéré / Élevé)</p>
+        <ul class="list-group list-group-flush mt-2">
+          {% for key, info in big_five.items %}
+          <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div>
+              <div class="trait-label">{{ info.label }}</div>
+              <div class="small-muted">{{ info.explanation }}</div>
+            </div>
+            <div class="text-end">
+              <div style="font-weight:700">{{ info.value }}</div>
+              <div class="small-muted">{{ info.level }}</div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="stat-card">
+        <h5>DISC</h5>
+        <p class="small-muted">Style dominant: <strong>{{ disc.primary_label }}</strong></p>
+        <p class="small-muted">{{ disc.primary_explanation }}</p>
+        <div class="chart-wrap mt-2">
+          <canvas id="discChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <div class="stat-card">
+        <h5>Bien‑être au travail</h5>
+        <p class="h3 mb-1">{{ wellbeing.score }} / 30</p>
+        <div class="small-muted">{{ wellbeing.label }} — {{ wellbeing.explanation }}</div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="stat-card">
+        <h5>Résilience & Intelligence émotionnelle</h5>
+        <p class="h3 mb-1">{{ resilience.score }} / 40</p>
+        <div class="small-muted">{{ resilience.label }} — {{ resilience.explanation }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-8">
+      <div class="stat-card">
+        <h5>Visualisation</h5>
+        <div class="row">
+          <div class="col-md-7">
+            <div class="chart-wrap">
+              <canvas id="bigFiveRadar"></canvas>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <h6>Recommandations</h6>
+            <ul id="recommendations" class="list-group list-group-flush">
+              {% comment %} recommendations will be inserted by JS if present in data_json {% endcomment %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="stat-card">
+        <h5>Actions suggérées (exemples)</h5>
+        <ol>
+          <li>Respiration guidée 5 min chaque matin.</li>
+          <li>Planification hebdomadaire: 3 tâches prioritaires par jour.</li>
+          <li>Courte pause sociale (10 min) pour renforcer l’énergie.</li>
+        </ol>
+        <small class="small-muted">Vous pouvez personnaliser ces actions depuis le panneau coach.</small>
+      </div>
+    </div>
+  </div>
+
+  <script id="assessment-data" type="application/json">{{ data_json|safe }}</script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="{% static 'coaching/js/report.js' %}"></script>
+</div>
+</body>
+</html>

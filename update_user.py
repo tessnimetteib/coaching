@@ -1,0 +1,1 @@
+from django.contrib.auth import get_user_model User = get_user_model() u = User.objects.filter(username='tes').first() if not u: print("User 'tes' not found") else: u.first_name = "Tess" u.save() print("Updated user:", u.username, "first_name:", u.first_name)

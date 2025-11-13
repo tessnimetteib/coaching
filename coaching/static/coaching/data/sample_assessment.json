@@ -1,0 +1,22 @@
+{
+  "big_five": {
+    "openness": 20,
+    "conscientiousness": 17,
+    "extraversion": 12,
+    "agreeableness": 21,
+    "stability": 14
+  },
+  "disc": {
+    "D": 7,
+    "I": 11,
+    "S": 8,
+    "C": 6
+  },
+  "wellbeing_score": 24,
+  "resilience_score": 33,
+  "recommendations": [
+    "Pratique quotidienne de respiration 4-7-8 (5 minutes).",
+    "Planification hebdomadaire: sélectionner 3 tâches prioritaires.",
+    "Court check-in hebdomadaire avec un coach humain si le stress persiste."
+  ]
+}

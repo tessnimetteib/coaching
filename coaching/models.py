@@ -24,6 +24,9 @@ class CoachingSession(models.Model):
     progress_percentage = models.IntegerField(default=0)
     total_messages = models.IntegerField(default=0)
     exercises_completed = models.IntegerField(default=0)
+
+    # Conversation state for the static coach (simple finite-state)
+    session_state = models.CharField(max_length=50, default='idle')  # NEW FIELD
     
     class Meta:
         ordering = ['-last_interaction']
@@ -67,12 +70,12 @@ class CoachingExercise(models.Model):
     ]
     
     title = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     exercise_type = models.CharField(max_length=50, choices=EXERCISE_TYPES)
-    theme = models.CharField(max_length=100)  # stress, assertivité, etc.
+    theme = models.CharField(max_length=100, blank=True)  # stress, assertivité, etc.
     difficulty_level = models.IntegerField(default=1)  # 1-5
-    estimated_duration = models.IntegerField(help_text="Duration in minutes")
-    instructions = models.TextField()
+    estimated_duration = models.IntegerField(help_text="Duration in minutes", default=5)
+    instructions = models.TextField(blank=True)
     reflection_questions = models.JSONField(default=list)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -124,7 +127,7 @@ class CoachingRecommendation(models.Model):
     session = models.ForeignKey(CoachingSession, on_delete=models.CASCADE, null=True, blank=True)
     recommendation_type = models.CharField(max_length=50, choices=RECOMMENDATION_TYPES)
     title = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     priority = models.IntegerField(default=3)  # 1-5, 5 being highest
     metadata = models.JSONField(default=dict)  # Links to exercises, resources, etc.
     is_acted_upon = models.BooleanField(default=False)
@@ -191,7 +194,7 @@ class DailyCheckIn(models.Model):
 class CoachNote(models.Model):
     """Notes for human coaches about AI interactions"""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='coach_notes')
-    session = models.ForeignKey(CoachingSession, on_delete=models.CASCADE, related_name='coach_notes')
+    session = models.ForeignKey(CoachingSession, on_delete=models.CASCADE, related_name='coach_notes', null=True, blank=True)
     generated_by_ai = models.BooleanField(default=True)
     
     note_type = models.CharField(max_length=50)  # alert, insight, recommendation, etc.
@@ -210,3 +213,25 @@ class CoachNote(models.Model):
     
     def __str__(self):
         return f"Note for {self.user.username} - {self.title}"
+
+
+class AssessmentResult(models.Model):
+    """
+    Static/mock assessment storage for NextMind test results.
+    Keeps Big Five, DISC, wellbeing and resilience results and recommendations.
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assessments")
+    session = models.ForeignKey(CoachingSession, on_delete=models.SET_NULL, null=True, blank=True, related_name="assessments")
+    big_five = models.JSONField(default=dict)        # e.g. {"openness": 18, "conscientiousness": 15, ...}
+    disc = models.JSONField(default=dict)            # e.g. {"D": 6, "I": 10, "S": 8, "C": 6}
+    wellbeing_score = models.IntegerField(default=0) # 0-30
+    resilience_score = models.IntegerField(default=0)# 0-40
+    recommendations = models.JSONField(default=list) # array of strings or dicts
+    notes = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("-created_at",)
+
+    def __str__(self):
+        return f"Assessment {self.user.username} @ {self.created_at.isoformat()}"

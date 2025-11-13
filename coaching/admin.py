@@ -1,4 +1,12 @@
 from django.contrib import admin
+from .models import AssessmentResult
+
+@admin.register(AssessmentResult)
+class AssessmentResultAdmin(admin.ModelAdmin):
+    list_display = ("user", "created_at", "wellbeing_score", "resilience_score")
+    search_fields = ("user__username", "user__email")
+    readonly_fields = ("created_at",)
+
 from .models import (
     CoachingSession, CoachingMessage, CoachingExercise,
     UserExerciseCompletion, CoachingRecommendation,

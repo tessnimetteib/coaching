@@ -5,8 +5,13 @@
 {% block content %}
 <div class="container-fluid">
     <h2 class="mb-4">👋 Bonjour, {{ request.user.first_name|default:request.user.username }}!</h2>
-    
-    <!-- Stats Cards -->
+
+    <!-- Daily motivation -->
+    {% if coach_daily_motivation %}
+      <div class="alert alert-info">{{ coach_daily_motivation }}</div>
+    {% endif %}
+
+    <!-- Stats Cards (kept) -->
     <div class="row mb-4">
         <div class="col-md-3">
             <div class="stat-card primary">
@@ -54,47 +59,45 @@
         </div>
     </div>
 
-    <!-- Quick Actions -->
+    <!-- Parcours de coaching -->
     <div class="row mb-4">
         <div class="col-md-8">
             <div class="card p-4">
-                <h4 class="mb-3"><i class="fas fa-rocket text-primary"></i> Actions Rapides</h4>
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <a href="{% url 'chat' %}" class="btn btn-primary w-100 py-3">
-                            <i class="fas fa-comments fa-2x mb-2 d-block"></i>
-                            Parler au Coach IA
-                        </a>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <a href="{% url 'checkin' %}" class="btn btn-success w-100 py-3">
-                            <i class="fas fa-heart fa-2x mb-2 d-block"></i>
-                            Check-in Quotidien
-                        </a>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <a href="{% url 'exercises' %}" class="btn btn-warning w-100 py-3">
-                            <i class="fas fa-dumbbell fa-2x mb-2 d-block"></i>
-                            Voir les Exercices
-                        </a>
-                    </div>
-                </div>
+                <h4 class="mb-3"><i class="fas fa-road text-primary"></i> Parcours de coaching recommandé</h4>
+                {% if coach_training_paths %}
+                  {% for p in coach_training_paths %}
+                  <div class="mb-3 p-3 border rounded">
+                    <strong class="d-block">{{ p.trait|capfirst }} — {{ p.level }} ({{ p.score }})</strong>
+                    <div class="small text-muted mb-1">{{ p.explanation }}</div>
+                    <div><strong>Formation:</strong> {{ p.label }}</div>
+                    <div><strong>Coaching:</strong> {{ p.coaching }}</div>
+                  </div>
+                  {% endfor %}
+                {% else %}
+                  <p class="text-muted">Aucun parcours personnalisé disponible.</p>
+                {% endif %}
             </div>
         </div>
-        
+
         <div class="col-md-4">
             <div class="card p-4">
-                <h5 class="mb-3"><i class="fas fa-lightbulb text-warning"></i> Conseil du Jour</h5>
-                <p class="text-muted">
-                    "Prenez 5 minutes aujourd'hui pour pratiquer la respiration profonde. 
-                    Cela peut réduire votre stress de 30%."
-                </p>
-                <button class="btn btn-outline-primary btn-sm">En savoir plus</button>
+                <h5 class="mb-3"><i class="fas fa-lightbulb text-warning"></i> Actions rapides</h5>
+                {% if coach_recommended_exercises %}
+                  {% for ex in coach_recommended_exercises %}
+                    <div class="mb-2">
+                      <strong>{{ ex.title }}</strong>
+                      <div class="small text-muted">{{ ex.instructions|truncatechars:80 }}</div>
+                      <div class="mt-1"><a href="#" class="btn btn-sm btn-outline-primary">Lancer</a></div>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <p class="text-muted">Pas d'actions rapides pour le moment.</p>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    <!-- Recent Activity & Exercises -->
+    <!-- Recent Activity & Exercises (kept) -->
     <div class="row">
         <div class="col-md-6">
             <div class="card p-4">

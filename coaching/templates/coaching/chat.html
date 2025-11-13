@@ -1,35 +1,62 @@
 {% extends 'coaching/base.html' %}
 
-{% block title %}Chat avec Coach IA - NextMind{% endblock %}
+{% block title %}Chat avec le Coach IA{% endblock %}
 
 {% block content %}
-<div class="container">
-  <h2 class="mb-3">Chat avec le Coach IA</h2>
+<div class="container py-4">
+  <h3>Chat avec le Coach IA</h3>
+  {% if coach_daily_motivation %}
+    <div class="alert alert-info">Motivation du jour: {{ coach_daily_motivation }}</div>
+  {% endif %}
 
-  <div id="chat-box" class="card mb-3" style="min-height:200px;">
+  <div class="card mb-3">
     <div class="card-body">
-      {% if messages %}
-        <ul class="list-unstyled">
-          {% for msg in messages %}
-            <li class="mb-2">
-              <strong class="me-2">{{ msg.sender|capfirst }}:</strong>
-              <span>{{ msg.content }}</span>
-              <small class="text-muted float-end">{{ msg.timestamp }}</small>
-            </li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p class="text-muted">Aucun message pour le moment. Démarrez la conversation ci-dessous.</p>
+      {% if coach_intro %}
+        <div class="mb-3"><strong>Coach:</strong> {{ coach_intro }}</div>
       {% endif %}
+
+      <div id="chat-history" style="max-height:420px; overflow:auto;">
+        {% if messages %}
+          <ul class="list-unstyled">
+            {% for msg in messages %}
+              <li class="mb-2">
+                <strong>{{ msg.sender|capfirst }}:</strong> {{ msg.content }}
+                <div class="text-muted small">{{ msg.timestamp }}</div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted">Aucun message pour le moment. Commencez la conversation ci-dessous.</p>
+        {% endif %}
+      </div>
+
+      <form method="post" class="mt-3">
+        {% csrf_token %}
+        <div class="input-group">
+          <input name="message" class="form-control" placeholder="Écrivez votre message..." autocomplete="off" />
+          <button class="btn btn-primary" type="submit">Envoyer</button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <form method="post" action="">
-    {% csrf_token %}
-    <div class="input-group">
-      <input name="message" id="message" class="form-control" placeholder="Écrivez votre message..." autocomplete="off">
-      <button class="btn btn-primary" type="submit">Envoyer</button>
+  <div class="row">
+    <div class="col-md-6">
+      <h5>Exercices recommandés</h5>
+      <ul>
+        {% for ex in coach_recommended_exercises %}
+          <li><strong>{{ ex.title }}</strong> — <small>{{ ex.instructions }}</small></li>
+        {% endfor %}
+      </ul>
     </div>
-  </form>
+    <div class="col-md-6">
+      <h5>Ressources</h5>
+      <ul>
+        {% for r in coach_recommended_resources %}
+          <li><a href="{{ r.url }}" target="_blank">{{ r.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
 </div>
 {% endblock %}

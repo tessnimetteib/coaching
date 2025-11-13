@@ -11,7 +11,6 @@ router.register(r'recommendations', views.CoachingRecommendationViewSet, basenam
 router.register(r'dashboard', views.CoachingDashboardViewSet, basename='dashboard')
 
 urlpatterns = [
-    # Web UI Views
     path('', views.dashboard_view, name='dashboard'),
     path('chat/', views.chat_view, name='chat'),
     path('exercises/', views.exercises_view, name='exercises'),
@@ -19,7 +18,6 @@ urlpatterns = [
     path('checkin/', views.checkin_view, name='checkin'),
     path('progress/', views.progress_view, name='progress'),
     path('resources/', views.resources_view, name='resources'),
-    
-    # API Routes
+    path('send_report/', views.send_report_to_coach, name='send_report_to_coach'),
     path('api/', include(router.urls)),
 ]
